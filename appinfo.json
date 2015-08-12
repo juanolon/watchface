@@ -1,0 +1,26 @@
+{
+  "uuid": "e55fd571-cb7b-4cbc-86ee-29f9cb6de16e",
+  "shortName": "AwesomeWatch",
+  "longName": "AwesomeWatchFace",
+  "companyName": "MakeAwesomeHappen",
+  "versionCode": 1,
+  "versionLabel": "1.0",
+  "sdkVersion": "3",
+  "targetPlatforms": ["basalt"],
+  "watchapp": {
+    "watchface": true
+  },
+  "appKeys": {
+    "dummy": 0
+  },
+  "resources": {
+      "media": [
+          {
+              "type": "font",
+              "name": "FONT_RUBYK_ONE_55",
+              "file": "fonts/E4DigitalLowercases.ttf",
+              "compatibility": "2.7"
+          }
+      ]
+  }
+}
