@@ -20,6 +20,12 @@
               "name": "FONT_RUBYK_ONE_55",
               "file": "fonts/E4DigitalLowercases.ttf",
               "compatibility": "2.7"
+          },
+          {
+              "type": "font",
+              "name": "FONT_RUBYK_ONE_15",
+              "file": "fonts/E4DigitalLowercases.ttf",
+              "compatibility": "2.7"
           }
       ]
   }
