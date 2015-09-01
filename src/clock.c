@@ -1,97 +1,78 @@
 #include <pebble.h>
 #include <clock.h>
 
-TextLayer* clock_get_digit_text_layer(Clock *clock, GRect rect){
-    TextLayer* s_digit_layer = text_layer_create(rect);
+#define HOUR_BOX_RADIUS 2
+#define HOUR_BOX_WIDTH 70 // 144/2
+#define HOUR_BOX_HEIGHT 60
 
-#ifdef PBL_COLOR
-    text_layer_set_background_color(s_digit_layer, GColorOrange);
-    text_layer_set_text_color(s_digit_layer, GColorDarkGreen);
-#else
-    text_layer_set_background_color(s_digit_layer, GColorBlack);
-    text_layer_set_text_color(s_digit_layer, GColorClear);
-#endif
+void clock_update_proc(ClockLayer* clock_layer, GContext* ctx) {
+    Clock *data = (Clock *)layer_get_data(clock_layer);
+    GRect bounds = layer_get_bounds(clock_layer);
+    GRect box;
 
-    text_layer_set_font(s_digit_layer, clock->font);
-    text_layer_set_text_alignment(s_digit_layer, GTextAlignmentCenter);
-    return s_digit_layer;
-}
+    graphics_context_set_fill_color(ctx, GColorOrange);
+    graphics_context_set_text_color(ctx, GColorDarkGreen);
 
-Clock* create_clock(GFont *font){
-    Clock *clock = (Clock*)malloc(sizeof(Clock));
-    if (!clock) {
-        APP_LOG(APP_LOG_LEVEL_ERROR, "failed to allocate memory for the clock");
-        return NULL;
+    int orig_y = bounds.origin.y;
+    int orig_x = bounds.origin.x;
+    char digit[1];
+
+    // Draw days
+    for (int i = 0; i < 4; ++i) {
+        if (i<2) { // up
+            box = GRect(orig_x+((i%2)*HOUR_BOX_WIDTH), orig_y, HOUR_BOX_WIDTH, HOUR_BOX_HEIGHT);
+        } else { // down
+            box = GRect(orig_x+((i%2)*HOUR_BOX_WIDTH), orig_y+HOUR_BOX_HEIGHT, HOUR_BOX_WIDTH, HOUR_BOX_HEIGHT);
+        }
+
+        graphics_context_set_fill_color(ctx, GColorBlack);
+        graphics_fill_rect(ctx, box, HOUR_BOX_RADIUS, GCornersTop);
+        snprintf(digit, 10, "%d", data->hour[i]);
+
+        APP_LOG(APP_LOG_LEVEL_INFO, digit);
+        graphics_draw_text(
+                ctx,
+                digit,
+                data->font,
+                box,
+                GTextOverflowModeFill,
+                GTextAlignmentCenter,
+                NULL
+                );
     }
-
-    clock->font = font;
-
-    clock->upleft = clock_get_digit_text_layer(clock, GRect(10, 10, 57, 58));
-    clock->upright = clock_get_digit_text_layer(clock, GRect(77, 10, 57, 58));
-    clock->downleft = clock_get_digit_text_layer(clock, GRect(10, 72, 57, 58));
-    clock->downright = clock_get_digit_text_layer(clock, GRect(77, 72, 57, 58));
-
-    return clock;
 }
 
-void clock_set_time(Clock *clock, char *cTime){
+ClockLayer* clock_layer_create(GRect frame, GFont* font){
+    ClockLayer *clock_layer = layer_create_with_data(frame, sizeof(Clock));
+    layer_set_update_proc(clock_layer, clock_update_proc);
+
+    Clock *bar = (Clock *)layer_get_data(clock_layer);
+    bar->font = font;
+
+    return clock_layer;
+}
+
+void clock_layer_destroy(ClockLayer* clockLayer){
+    // TODO need to destroy child layers?
+    if (clockLayer) {
+        layer_destroy(clockLayer);
+    }
+}
+
+void clock_layer_set_time(ClockLayer* clockLayer, char* time){
+    Clock *data = (Clock *)layer_get_data(clockLayer);
 
     char *test = (char*)malloc(sizeof(9));
 
     for(int i=0; i<7;i++){
         test[i] = '\0';
     }
-
-    // TODO refactor:
-    // http://stackoverflow.com/a/2104846
-    // strcpy(test, '\0..')
     for(int i=0; i<4;i++){
-        test[i*2] = cTime[i];
+        test[i*2] = time[i];
     }
 
-    APP_LOG(APP_LOG_LEVEL_INFO, "setting time:");
-    APP_LOG(APP_LOG_LEVEL_INFO, &test[0]);
-    APP_LOG(APP_LOG_LEVEL_INFO, &test[2]);
-    APP_LOG(APP_LOG_LEVEL_INFO, &test[4]);
-    APP_LOG(APP_LOG_LEVEL_INFO, &test[6]);
-
-    text_layer_set_text(clock->upleft, &test[0]);
-    text_layer_set_text(clock->upright, &test[2]);
-    text_layer_set_text(clock->downleft, &test[4]);
-    text_layer_set_text(clock->downright, &test[6]);
-}
-
-void clock_attach_to_window(Clock *clock, Layer *layer){
-    layer_add_child(layer, text_layer_get_layer(clock->upleft));
-    layer_add_child(layer, text_layer_get_layer(clock->upright));
-    layer_add_child(layer, text_layer_get_layer(clock->downleft));
-    layer_add_child(layer, text_layer_get_layer(clock->downright));
-}
-
-void clock_unload_clock(Clock *clock){
-    text_layer_destroy(clock->upleft);
-    text_layer_destroy(clock->upright);
-    text_layer_destroy(clock->downleft);
-    text_layer_destroy(clock->downright);
-    fonts_unload_custom_font(clock->font);
-    free(clock);
-    clock = NULL;
-}
-
-void clock_update_time(Clock *clock){
-    time_t temp = time(NULL);
-    struct tm *tick_time = localtime(&temp);
-
-    char buffer[] = "0000";
-
-    // TODO get from the settings
-    if (clock_is_24h_style() == true) {
-        strftime(buffer, sizeof(buffer), "%H%M", tick_time);
-    } else {
-        // use 12 hour format
-        strftime(buffer, sizeof(buffer), "%I%M", tick_time);
+    for(int i=0; i<4;i++){
+        data->hour[i] = atoi(&test[i*2]);
     }
-
-    clock_set_time(clock, buffer);
+    layer_mark_dirty(clockLayer);
 }
-

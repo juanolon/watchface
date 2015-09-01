@@ -57,11 +57,10 @@ void bar_update_proc(BottomBarLayer* bar_layer, GContext* ctx) {
                 );
     }
 
+    // Draw date
     graphics_context_set_fill_color(ctx, GColorGreen);
-
     box = GRect(orig_x+(8*DAY_BOX_WIDTH), orig_y, DAY_BOX_WIDTH*2, DAY_BOX_HEIGHT);
 
-    // Draw date
     graphics_draw_text(
             ctx,
             data->date,
@@ -77,7 +76,6 @@ void bar_update_proc(BottomBarLayer* bar_layer, GContext* ctx) {
 BottomBarLayer* bar_layer_create(GRect frame, GFont* font){
     BottomBarLayer *bar_layer = layer_create_with_data(frame, sizeof(BottomBar));
     layer_set_update_proc(bar_layer, bar_update_proc);
-    layer_mark_dirty(bar_layer);
 
     BottomBar *bar = (BottomBar *)layer_get_data(bar_layer);
     bar->font = font;

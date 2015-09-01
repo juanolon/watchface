@@ -3,20 +3,19 @@
 #include <pebble.h>
 
 typedef struct Clock{
-    TextLayer *upleft, *upright, *downleft, *downright;
     GFont *font;
+    int hour[8];
 } Clock;
 
 typedef struct Clock Clock;
+typedef Layer ClockLayer;
 
 TextLayer* clock_get_digit_text_layer(Clock *, GRect);
 
-Clock* create_clock(GFont *);
+ClockLayer* clock_layer_create(GRect, GFont *);
 
-void clock_set_time(Clock *, char *);
+void clock_layer_destroy(ClockLayer *);
 
-void clock_attach_to_window(Clock *, Layer *);
+void clock_set_time(Clock *, char *); // DEPRECATE
 
-void clock_unload_clock(Clock *);
-
-void clock_update_time(Clock *);
+void clock_layer_set_time(ClockLayer *, char *);

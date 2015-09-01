@@ -20,4 +20,4 @@ void bar_layer_destroy(BottomBarLayer *);
 
 void bar_layer_set_day(BottomBarLayer *, char *);
 
-void bar_layer_set_date(BottomBarLayer *, char*);
+void bar_layer_set_date(BottomBarLayer *, char *);
