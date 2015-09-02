@@ -62,11 +62,7 @@ void clock_layer_destroy(ClockLayer* clockLayer){
 void clock_layer_set_time(ClockLayer* clockLayer, char* time){
     Clock *data = (Clock *)layer_get_data(clockLayer);
 
-    char *test = (char*)malloc(sizeof(9));
-
-    for(int i=0; i<7;i++){
-        test[i] = '\0';
-    }
+    char test[8];
     for(int i=0; i<4;i++){
         test[i*2] = time[i];
     }
