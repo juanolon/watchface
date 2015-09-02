@@ -6,6 +6,7 @@ typedef struct BottomBar{
     GFont *font;
     int currentDay;
     bool startOnMonday;
+    bool isConnected;
     char date[2];
 } BottomBar;
 

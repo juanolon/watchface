@@ -2,6 +2,14 @@
 #include <clock.h>
 #include <bottombar.h>
 
+#define BAR_FONT RESOURCE_ID_FONT_RUBYK_ONE_17
+#define CLOCK_FONT RESOURCE_ID_FONT_RUBYK_ONE_60
+
+#define SCREEN_W 144
+#define SCREEN_H 168
+// SCREEN_SPLIT defines where the clock ends and the bar starts
+#define SCREEN_SPLIT 21
+
 static Window *s_main_window;
 static GFont *s_day_font;
 static GFont *s_clock_font;
@@ -36,15 +44,15 @@ static void update_ui() {
 static void main_window_load(Window *window){
     Layer *window_layer = window_get_root_layer(window);
 
-    s_day_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_RUBYK_ONE_15));
-    s_clock_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_RUBYK_ONE_55));
+    s_day_font = fonts_load_custom_font(resource_get_handle(BAR_FONT));
+    s_clock_font = fonts_load_custom_font(resource_get_handle(CLOCK_FONT));
 
     // 144x168
-    s_clock_layer = clock_layer_create(GRect(0, 0, 144, 144), s_clock_font);
+    s_clock_layer = clock_layer_create(GRect(0, 0, SCREEN_W, SCREEN_H - SCREEN_SPLIT), s_clock_font);
     layer_add_child(window_layer, s_clock_layer);
 
     // 144x16
-    s_bar_layer = bar_layer_create(GRect(0, 144, 144, 30), s_day_font);
+    s_bar_layer = bar_layer_create(GRect(0, SCREEN_H - SCREEN_SPLIT, SCREEN_W, SCREEN_SPLIT), s_day_font);
     layer_add_child(window_layer, s_bar_layer);
     update_ui();
 }

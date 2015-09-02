@@ -17,13 +17,13 @@
       "media": [
           {
               "type": "font",
-              "name": "FONT_RUBYK_ONE_55",
+              "name": "FONT_RUBYK_ONE_60",
               "file": "fonts/E4DigitalLowercases.ttf",
               "compatibility": "2.7"
           },
           {
               "type": "font",
-              "name": "FONT_RUBYK_ONE_15",
+              "name": "FONT_RUBYK_ONE_17",
               "file": "fonts/E4DigitalLowercases.ttf",
               "compatibility": "2.7"
           }
