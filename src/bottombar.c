@@ -2,7 +2,7 @@
 #include <bottombar.h>
 
 // TODO translations?
-/* #define DAYS "SMTWTFS" */
+#define DAYS "S\0M\0T\0W\0T\0F\0S"
 #define BACKGROUND GColorOrange
 #define CURRENT_BACKGROUND GColorBlueMoon
 
@@ -10,12 +10,9 @@
 #define DAY_BOX_WIDTH 15 // 144/8
 #define DAY_BOX_HEIGHT 20
 
-const char *DAYS = "S\0M\0T\0W\0T\0F\0S";
-
 void bar_update_proc(BottomBarLayer* bar_layer, GContext* ctx) {
     BottomBar *data = (BottomBar *)layer_get_data(bar_layer);
     GRect bounds = layer_get_bounds(bar_layer);
-    bool isCurrent = false;
     GRect box;
 
     // attribute: day background color
@@ -27,17 +24,7 @@ void bar_update_proc(BottomBarLayer* bar_layer, GContext* ctx) {
 
     // Draw days
     for (int i = 0; i < 7; ++i) {
-        isCurrent = (i == data->currentDay);
-
         box = GRect(orig_x+(i*DAY_BOX_WIDTH), orig_y, DAY_BOX_WIDTH, DAY_BOX_HEIGHT);
-
-        // DEBUG
-        APP_LOG(APP_LOG_LEVEL_INFO, &DAYS[i*2]);
-        if (isCurrent) {
-            APP_LOG(APP_LOG_LEVEL_INFO, "<---");
-        }
-        APP_LOG(APP_LOG_LEVEL_INFO, data->date);
-        // END DEBUG
 
         if (i == data->currentDay) {
             graphics_context_set_fill_color(ctx, CURRENT_BACKGROUND);

@@ -18,16 +18,18 @@ static void update_ui() {
     } else {
         strftime(hour, sizeof(hour), "%I%M", tick_time);
     }
+    /* APP_LOG(APP_LOG_LEVEL_INFO, "updating hour %s", hour); */
     clock_layer_set_time(s_clock_layer, hour);
-    APP_LOG(APP_LOG_LEVEL_INFO, hour);
 
     char date[] = "00";
     strftime(date, sizeof(date), "%d", tick_time);
+    /* APP_LOG(APP_LOG_LEVEL_INFO, "updating date %s", date); */
     bar_layer_set_date(s_bar_layer, date);
 
     char day[] = "0";
     // TODO handle setting "start on monday"
     strftime(day, sizeof(day), "%w", tick_time);
+    /* APP_LOG(APP_LOG_LEVEL_INFO, "updating day %s", day); */
     bar_layer_set_day(s_bar_layer, day);
 }
 
@@ -38,7 +40,6 @@ static void main_window_load(Window *window){
     s_clock_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_RUBYK_ONE_55));
 
     // 144x168
-    // TODO pass a child layer instead
     s_clock_layer = clock_layer_create(GRect(0, 0, 144, 144), s_clock_font);
     layer_add_child(window_layer, s_clock_layer);
 
