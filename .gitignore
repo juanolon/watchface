@@ -5,3 +5,4 @@ build
 # Ignore waf lock file
 .lock-waf*
 .env
+.DS_Store
